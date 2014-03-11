@@ -64,4 +64,11 @@ showPoly p =  let cOs = zip p [0..]								-- Create (coeff, exp) tuples
                   terms = map (\(c,n) -> cnShow c n) nonZeroCOs
               in intercalate " + " (reverse terms)
 
-main = print $ multPoly [3,0,1] [4,0,1]
+printPoly p = print $ showPoly $ p
+
+main = do printPoly $ [1,3,1]
+          printPoly $ addPoly [1,0,4,0,5] [1,2,1,3]
+          printPoly $ subPoly [1,0,4,0,5] [1,2,1,3]
+          printPoly $ timesPoly 4 [1,0,4,0,5]
+          printPoly $ dxPoly  [1,0,4,0,5]
+          printPoly $ multPoly [3,1] [4,1]
