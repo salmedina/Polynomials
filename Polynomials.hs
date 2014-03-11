@@ -5,7 +5,7 @@ authors:  Salvador Medina
 description:  This program implements operations over polynomials.
               Each polynomial is represented by an integer array
               where the exponents are implicit in the array position.
-
+This works
 -}
 --Used for intercalate
 import Data.List
