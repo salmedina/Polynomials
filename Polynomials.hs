@@ -57,22 +57,26 @@ dxPoly (_:ps) = zipWith (*) ps [1..]
 -- Show polynomial as a string
 showPoly [] = show 0
 showPoly p =  let cOs = zip p [0..]               -- Create (coeff, exp) tuples
-                  nonZeroCOs = filter (\(c,_) -> c /= 0) cOs  -- Keep the non-zero coefficients
-                  cShow c = if c == 1               -- This function is used to show the coefficient  
-                            then "" 
-                            else show c
+                  nonZeroCOs = filter (\(c,_) -> c /= 0) (reverse cOs)  -- Keep the non-zero coefficients
+                  cShow c 
+                        | c == 1 = ""               -- This function is used to show the coefficient   
+                        | c > 1 = "+ "++show c
+                        | c < 0 = "- "++show (c*(-1))
+                  sShow s 
+                        | s == 1 = ""               -- This function is used to show the coefficient   
+                        | otherwise = show s
                   nShow n = case n of               -- This function is to show the exponent
                               0 -> ""
                               1 -> "x" 
                               m -> "x^" ++ show m
                   cnShow c n = if c == 1 && n == 0        -- Mix both show funcs
                                then show 1 
-                               else intercalate " " $ filter (/="") [cShow c, nShow n]            
-                  terms = map (\(c,n) -> cnShow c n) nonZeroCOs
-              in intercalate " + " (reverse terms)
+                               else intercalate "" $ filter (/="") [cShow c, nShow n]            
+                  terms = (sShow$(fst$head nonZeroCOs)):(nShow (snd$head nonZeroCOs)):(map (\(c,n) -> cnShow c n) (tail  nonZeroCOs))
+              in intercalate " " (terms)
 
 main = do let p = [1,2,3,4]
-          let q = [5, 0 ,3] 
+              q = [5, 0 ,3] 
           putStrLn $ "p(x) =           " ++ showPoly p
           putStrLn $ "p(x) =           " ++ showPoly q
           putStrLn $ "p(x)+q(x) =      " ++ showPoly (addPoly p q)
