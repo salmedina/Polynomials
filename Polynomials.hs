@@ -8,7 +8,7 @@ description:  This program implements operations over polynomials.
 -}
 
 --Used for intercalate
-import Data.List
+import Data.List (intercalate)
 
 --  Reduces polynomial to proper representation
 toProper [] = []
@@ -32,16 +32,16 @@ subPoly (x:xs) (y:ys) = x - y : subPoly xs ys
 multiplyByX p = 0:p   --Increase the whole polynomial by 1 degree
 
 -- Multiplies polynomial by a constant
-timesPoly a p1 = map (a*) p1
+timesPoly c p1 = map (c*) p1
 
 -- Multiply two polynomials
 multPoly [] p2 = [] --if multiplied by 0 -> 0
 multPoly (p:p1) p2 = let pTimesP2 = timesPoly p p2
-                         xTimesP1Timesp2 = multiplyByX $ multPoly p1 p2
-                     in addPoly pTimesP2 xTimesP1Timesp2  
+                         xTimesP1TimesP2 = multiplyByX $ multPoly p1 p2
+                     in addPoly pTimesP2 xTimesP1TimesP2  
 
 -- Evaluate polynomials
-evalPoly a p1 = [sum (zipWith (*) p1 [a^pows | pows <- [0 ..]])]
+evalPoly p x = [sum (zipWith (*) p [x^pows | pows <- [0 ..]])]
 
 -- Composite polynomials
 --compPoly a p1 p2 = [sum (zipWith (multPoly) p2 [a^pows | pows <- [0 ..]])]
@@ -71,15 +71,15 @@ showPoly p =  let cOs = zip p [0..]               -- Create (coeff, exp) tuples
                   terms = map (\(c,n) -> cnShow c n) nonZeroCOs
               in intercalate " + " (reverse terms)
 
-printPoly p = print $ showPoly $ p
-
-main = do printPoly $ [1,3,1]
-          printPoly $ evalPoly 2 [1,3,1]
-          printPoly $ addPoly [1,0,4,0,5] [1,2,1,3]
-          printPoly $ subPoly [1,0,4,0,5] [1,2,1,3]
-          printPoly $ timesPoly 4 [1,0,4,0,5]
-          printPoly $ dxPoly  [1,0,4,0,5]
-          --printPoly $ dxPoly'  [1,0,4,0,5]
-          printPoly $ multPoly [3,1] [4,1]
----print $ addPoly [1,0,4,0,5] [1,2,1,3]
+main = do let p = [1,2,3,4]
+          let q = [5, 0 ,3] 
+          putStrLn $ "p(x) =           " ++ showPoly p
+          putStrLn $ "p(x) =           " ++ showPoly q
+          putStrLn $ "p(x)+q(x) =      " ++ showPoly (addPoly p q)
+          putStrLn $ "p(x)*q(x) =      " ++ showPoly (multPoly p q)
+          putStrLn $ "p(q(x)) =        " ++ ""
+          putStrLn $ "0-p(x) =         " ++ showPoly (addPoly [] (negatePoly p))
+          putStrLn $ "p(3) =           " ++ showPoly (evalPoly p 3)
+          putStrLn $ "p'(x) =          " ++ showPoly (dxPoly p)
+          putStrLn $ "p''(x) =         " ++ showPoly (dxPoly (dxPoly p))
           
