@@ -43,8 +43,6 @@ multPoly (p:p1) p2 = let pTimesP2 = timesPoly p p2
 -- Evaluate polynomials
 evalPoly p x = [sum (zipWith (*) p [x^pows | pows <- [0 ..]])]
 
--- Composite polynomials
---compPoly a p1 p2 = [sum (zipWith (multPoly) p2 [a^pows | pows <- [0 ..]])]
 
 -- Negates all the polynomial coefficients
 negatePoly = map negate
@@ -76,12 +74,13 @@ showPoly p =  let cOs = zip p [0..]               -- Create (coeff, exp) tuples
               in intercalate " " (terms)
 
 main = do let p = [1,2,3,4]
-              q = [5, 0 ,3] 
+              q = [5,0,3] 
+          putStrLn $ "zero(x) =        " ++ showPoly []
           putStrLn $ "p(x) =           " ++ showPoly p
           putStrLn $ "p(x) =           " ++ showPoly q
           putStrLn $ "p(x)+q(x) =      " ++ showPoly (addPoly p q)
           putStrLn $ "p(x)*q(x) =      " ++ showPoly (multPoly p q)
-          putStrLn $ "p(q(x)) =        " ++ ""
+          putStrLn $ "p(q(x)) =        " ++ showPoly (compPoly p q)
           putStrLn $ "0-p(x) =         " ++ showPoly (addPoly [] (negatePoly p))
           putStrLn $ "p(3) =           " ++ showPoly (evalPoly p 3)
           putStrLn $ "p'(x) =          " ++ showPoly (dxPoly p)
