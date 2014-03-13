@@ -16,6 +16,9 @@ toProper p = if (last p /= 0) -- this means there is nothing to do.
              then p 
              else toProper $ init p -- this means the last zero can be discarded.
 
+-- Negates all the polynomial coefficients
+negatePoly = map negate
+
 --  Adds two polynomials
 addPoly [] []     = []
 addPoly (x:xs) [] = x : addPoly xs [] 
@@ -23,10 +26,7 @@ addPoly [] (y:ys) = y : addPoly [] ys
 addPoly (x:xs) (y:ys) = x + y : addPoly xs ys
 
 -- Substracts two polynomials
-subPoly [] []     = []
-subPoly (x:xs) [] = x : subPoly xs [] 
-subPoly [] (y:ys) = y : subPoly [] ys
-subPoly (x:xs) (y:ys) = x - y : subPoly xs ys
+subPoly p q     = addPoly p (negatePoly q)
 
 -- Multiplies a polynomial by x
 multiplyByX p = 0:p   --Increase the whole polynomial by 1 degree
@@ -49,15 +49,12 @@ powPoly p n = multPoly p (powPoly p (n-1))
 evalPoly p x = [sum (zipWith (*) p [x^n | n<- [0 ..]])]
 
 -- Composite polynomials
---compPoly a p1 p2 = [sum (zipWith (multPoly) p2 [a^pows | pows <- [0 ..]])]
-
--- Negates all the polynomial coefficients
-negatePoly = map negate
+compPoly p q =  let terms = (zipWith (timesPoly) p [powPoly q n | n <- [0 ..]])
+                in foldr (addPoly) (head terms) (tail terms)
 
 -- Derives a polynomial
 dxPoly [] = []
 dxPoly (_:ps) = zipWith (*) ps [1..]
-
 
 -- Show polynomial as a string
 showPoly [] = show 0
@@ -82,13 +79,14 @@ showPoly p =  let cOs = zip p [0..]               -- Create (coeff, exp) tuples
 
 main = do let p = [1,2,3,4]
               q = [5, 0 ,3] 
-          putStrLn $ "p(x) =           " ++ showPoly p
-          putStrLn $ "p(x) =           " ++ showPoly q
-          putStrLn $ "p(x)+q(x) =      " ++ showPoly (addPoly p q)
-          putStrLn $ "p(x)*q(x) =      " ++ showPoly (multPoly p q)
-          putStrLn $ "p(q(x)) =        " ++ ""
-          putStrLn $ "0-p(x) =         " ++ showPoly (addPoly [] (negatePoly p))
-          putStrLn $ "p(3) =           " ++ showPoly (evalPoly p 3)
-          putStrLn $ "p'(x) =          " ++ showPoly (dxPoly p)
-          putStrLn $ "p''(x) =         " ++ showPoly (dxPoly (dxPoly p))
+          putStrLn $ "zero(x)        = " ++ showPoly []
+          putStrLn $ "p(x)           = " ++ showPoly p
+          putStrLn $ "p(x)           = " ++ showPoly q
+          putStrLn $ "p(x)+q(x)      = " ++ showPoly (addPoly p q)
+          putStrLn $ "p(x)*q(x)      = " ++ showPoly (multPoly p q)
+          putStrLn $ "p(q(x))        = " ++ showPoly (compPoly p q)
+          putStrLn $ "0-p(x)         = " ++ showPoly (subPoly [] p)
+          putStrLn $ "p(3)           = " ++ showPoly (evalPoly p 3)
+          putStrLn $ "p'(x)          = " ++ showPoly (dxPoly p)
+          putStrLn $ "p''(x)         = " ++ showPoly (dxPoly (dxPoly p))
           
