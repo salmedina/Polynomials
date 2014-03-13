@@ -80,7 +80,7 @@ main = do let p = [1,2,3,4]
           putStrLn $ "p(x) =           " ++ showPoly q
           putStrLn $ "p(x)+q(x) =      " ++ showPoly (addPoly p q)
           putStrLn $ "p(x)*q(x) =      " ++ showPoly (multPoly p q)
-          putStrLn $ "p(q(x)) =        " ++ showPoly (compPoly p q)
+--          putStrLn $ "p(q(x)) =        " ++ showPoly (compPoly p q)
           putStrLn $ "0-p(x) =         " ++ showPoly (addPoly [] (negatePoly p))
           putStrLn $ "p(3) =           " ++ showPoly (evalPoly p 3)
           putStrLn $ "p'(x) =          " ++ showPoly (dxPoly p)
