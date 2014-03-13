@@ -5,18 +5,18 @@ authors:  Salvador Medina
 description:  This program implements operations over polynomials.
               Each polynomial is represented by an integer array
               where the exponents are implicit in the array position.
-This works
 -}
+
 --Used for intercalate
 import Data.List
 
---	Reduces polynomial to proper representation
+--  Reduces polynomial to proper representation
 toProper [] = []
 toProper p = if (last p /= 0) -- this means there is nothing to do.
              then p 
              else toProper $ init p -- this means the last zero can be discarded.
 
---	Adds two polynomials
+--  Adds two polynomials
 addPoly [] []     = []
 addPoly (x:xs) [] = x : addPoly xs [] 
 addPoly [] (y:ys) = y : addPoly [] ys
@@ -40,6 +40,12 @@ multPoly (p:p1) p2 = let pTimesP2 = timesPoly p p2
                          xTimesP1Timesp2 = multiplyByX $ multPoly p1 p2
                      in addPoly pTimesP2 xTimesP1Timesp2  
 
+-- Evaluate polynomials
+evalPoly a p1 = [sum (zipWith (*) p1 [a^pows | pows <- [0 ..]])]
+
+-- Composite polynomials
+--compPoly a p1 p2 = [sum (zipWith (multPoly) p2 [a^pows | pows <- [0 ..]])]
+
 -- Negates all the polynomial coefficients
 negatePoly = map negate
 
@@ -47,18 +53,19 @@ negatePoly = map negate
 dxPoly [] = []
 dxPoly (_:ps) = zipWith (*) ps [1..]
 
+
 -- Show polynomial as a string
 showPoly [] = show 0
-showPoly p =  let cOs = zip p [0..]								-- Create (coeff, exp) tuples
-                  nonZeroCOs = filter (\(c,_) -> c /= 0) cOs 	-- Keep the non-zero coefficients
-                  cShow c = if c == 1 							-- This function is used to show the coefficient	
+showPoly p =  let cOs = zip p [0..]               -- Create (coeff, exp) tuples
+                  nonZeroCOs = filter (\(c,_) -> c /= 0) cOs  -- Keep the non-zero coefficients
+                  cShow c = if c == 1               -- This function is used to show the coefficient  
                             then "" 
                             else show c
-                  nShow n = case n of 							-- This function is to show the exponent
+                  nShow n = case n of               -- This function is to show the exponent
                               0 -> ""
                               1 -> "x" 
                               m -> "x^" ++ show m
-                  cnShow c n = if c == 1 && n == 0 				-- Mix both show funcs
+                  cnShow c n = if c == 1 && n == 0        -- Mix both show funcs
                                then show 1 
                                else intercalate " " $ filter (/="") [cShow c, nShow n]            
                   terms = map (\(c,n) -> cnShow c n) nonZeroCOs
@@ -67,8 +74,12 @@ showPoly p =  let cOs = zip p [0..]								-- Create (coeff, exp) tuples
 printPoly p = print $ showPoly $ p
 
 main = do printPoly $ [1,3,1]
+          printPoly $ evalPoly 2 [1,3,1]
           printPoly $ addPoly [1,0,4,0,5] [1,2,1,3]
           printPoly $ subPoly [1,0,4,0,5] [1,2,1,3]
           printPoly $ timesPoly 4 [1,0,4,0,5]
           printPoly $ dxPoly  [1,0,4,0,5]
+          --printPoly $ dxPoly'  [1,0,4,0,5]
           printPoly $ multPoly [3,1] [4,1]
+---print $ addPoly [1,0,4,0,5] [1,2,1,3]
+          
