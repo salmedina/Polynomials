@@ -89,4 +89,3 @@ main = do let p = [1,2,3,4]
           putStrLn $ "p(3)           = " ++ showPoly (evalPoly p 3)
           putStrLn $ "p'(x)          = " ++ showPoly (dxPoly p)
           putStrLn $ "p''(x)         = " ++ showPoly (dxPoly (dxPoly p))
-          
